@@ -1,0 +1,33 @@
+version: '3.5'
+
+services:
+  artifactory:
+    image: ${IMAGE_NAME:-docker.bintray.io/jfrog/artifactory-oss}:${IMAGE_TAG:-latest}
+    networks:
+      traefik-net:
+    volumes:
+      - data-vol:/var/opt/jfrog/artifactory
+    deploy:
+      mode: replicated
+      replicas: ${REPLICAS:-1}
+      restart_policy:
+        delay: ${RESTART_DELAY:-5s}
+      update_config:
+        delay: ${UPDATE_DELAY:-1m}
+      labels:
+        traefik.frontend.rule: Host:${TRAEFIK_SUBDOMAIN:-artifactory}.${PUBLIC_HOSTNAME}
+        traefik.backend: artifactory
+        traefik.port: '${PORT:-8081}'
+      resources:
+        limits:
+          cpus: '${RESOURCES_LIMITS_CPUS:-0.5}'
+          memory: ${RESOURCES_LIMITS_MEMORY:-3G}
+        reservations:
+          cpus: '${RESOURCES_RESERVATIONS_CPUS:-0.001}'
+          memory: ${RESOURCES_RESERVATIONS_MEMORY:-2G}
+
+networks:
+  traefik-net:
+    name: ${TRAEFIK_NET_NAME:-traefik-net}
+    driver: ${TRAEFIK_NET_DRIVER:-overlay}
+    external: true
