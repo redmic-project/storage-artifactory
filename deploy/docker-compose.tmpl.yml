@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.9'
 
 services:
   artifactory:
@@ -15,9 +15,10 @@ services:
       update_config:
         delay: ${UPDATE_DELAY:-1m}
       labels:
-        traefik.frontend.rule: Host:${TRAEFIK_SUBDOMAIN:-artifactory}.${PUBLIC_HOSTNAME}
-        traefik.backend: artifactory
-        traefik.port: '${PORT:-8081}'
+        traefik.enable: ${TRAEFIK_ENABLE:-true}
+        traefik.http.routers.artifactory.entrypoints: ${TRAEFIK_ENTRYPOINT:-http}
+        traefik.http.routers.artifactory.rule: Host(`${TRAEFIK_SUBDOMAIN:-artifactory}.${PUBLIC_HOSTNAME}`)
+        traefik.http.services.artifactory.loadbalancer.server.port: ${PORT:-8081}
       resources:
         limits:
           cpus: '${RESOURCES_LIMITS_CPUS:-0.5}'

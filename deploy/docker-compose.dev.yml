@@ -1,4 +1,4 @@
-version: '3.5'
+version: '3.9'
 
 volumes:
   data-vol:
@@ -6,5 +6,5 @@ volumes:
     driver: local
     driver_opts:
       type: ${VOL_TYPE}
-      o: addr=${VOL_ADDR},${VOL_OPTIONS}
+      o: addr=${VOL_ADDR},${VOL_OPTS}
       device: ${DATA_VOL_DEVICE:-:/artifactory-vol/}
